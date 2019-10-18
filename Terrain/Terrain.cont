@@ -1,0 +1,27 @@
+#version 400
+
+layout(vertices = 4) out;
+uniform mat4 mvpMatrix;
+
+
+void main()
+{
+	float z = (mvpMatrix * ((gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position + gl_in[3].gl_Position) / 4)).z;
+	float z0 = (mvpMatrix * ((gl_in[0].gl_Position + gl_in[2].gl_Position) / 4)).z;
+	float z1 = (mvpMatrix * ((gl_in[0].gl_Position + gl_in[1].gl_Position) / 4)).z;
+	float z2 = (mvpMatrix * ((gl_in[1].gl_Position + gl_in[3].gl_Position) / 4)).z;
+	float z3 = (mvpMatrix * ((gl_in[2].gl_Position + gl_in[3].gl_Position) / 4)).z;
+	
+	float level = max(floor(500 / z), 1);
+	
+    gl_out[gl_InvocationID].gl_Position
+      = gl_in[gl_InvocationID].gl_Position;
+      
+    gl_TessLevelOuter[0] = max(floor(500 / z0), 1);
+    gl_TessLevelOuter[1] = max(floor(500 / z1), 1);
+    gl_TessLevelOuter[2] = max(floor(500 / z2), 1);
+    gl_TessLevelOuter[3] = max(floor(500 / z3), 1);
+    
+    gl_TessLevelInner[0] = level;
+    gl_TessLevelInner[1] = level;
+}
